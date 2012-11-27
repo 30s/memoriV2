@@ -86,6 +86,8 @@ public class MemoriListAdapter extends BaseAdapter {
 		txt_photo_url.setText(memori.get_cover());
 		ImageView img_photo = (ImageView) view.findViewById(R.id.img_photo);
 		img_loader.displayImage("file://" + memori.get_cover(), img_photo);
+		TextView txt_count = (TextView) view.findViewById(R.id.txt_count);
+		txt_count.setText(memori.get_photo_count() + "");
 		
 		return view;
 	}
