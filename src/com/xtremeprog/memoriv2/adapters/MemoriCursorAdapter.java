@@ -16,7 +16,9 @@ public class MemoriCursorAdapter extends SimpleCursorAdapter {
 			String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		img_loader = ImageLoader.getInstance();
-		img_loader.init(ImageLoaderConfiguration.createDefault(context));
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+        	.memoryCacheExtraOptions(80, 80).build();
+		img_loader.init(config);
 	}
 
 	@Override
