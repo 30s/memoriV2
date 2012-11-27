@@ -11,11 +11,11 @@ import android.provider.MediaStore.Images;
 import android.view.Menu;
 import android.widget.ListView;
 
-import com.xtremeprog.memoriv2.adapters.MemoriCursorAdapter;
+import com.xtremeprog.memoriv2.adapters.MemoriListAdapter;
 
 public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-	private MemoriCursorAdapter memori_adapter;
+	private MemoriListAdapter memori_adapter;
 	private static final int MEMORI_LOADER = 0;
 	
     @Override
@@ -23,11 +23,8 @@ public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memori);
         
-		String[] columns = new String[] { MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATA };
-		int[] to = new int[] { R.id.txt_photo_url, R.id.img_photo };
-        memori_adapter = new MemoriCursorAdapter(this,
-				R.layout.memori_item, null, columns, to, 0);
         ListView lst_memori = (ListView) findViewById(R.id.lst_memori);
+        memori_adapter = new MemoriListAdapter(getBaseContext());
         lst_memori.setAdapter(memori_adapter);
         
         getLoaderManager().initLoader(MEMORI_LOADER, null, this);
@@ -62,18 +59,18 @@ public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> 
 					MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
 			
 			return new CursorLoader(this, Images.Media.EXTERNAL_CONTENT_URI, projections, null,
-					null, null);			
+					null, MediaStore.Images.Media.DATE_TAKEN + " DESC");			
 		}
 		throw new IllegalArgumentException("Unknow loader ID!");
 	}
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		memori_adapter.swapCursor(data);
+		memori_adapter.load_memoris(data);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		memori_adapter.swapCursor(null);
+		memori_adapter.load_memoris(null);
 	}    
 }
