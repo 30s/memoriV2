@@ -22,7 +22,7 @@ public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memori);
         
-		String[] columns = new String[] { MediaStore.Images.Media.DISPLAY_NAME };
+		String[] columns = new String[] { MediaStore.Images.Media.DATA };
 		int[] to = new int[] { R.id.txt_photo_url };
         memori_adapter = new SimpleCursorAdapter(this,
 				R.layout.memori_item, null, columns, to, 0);
