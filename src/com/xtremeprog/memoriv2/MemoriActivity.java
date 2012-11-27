@@ -10,11 +10,12 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.view.Menu;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+
+import com.xtremeprog.memoriv2.adapters.MemoriCursorAdapter;
 
 public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> {
 
-	private SimpleCursorAdapter memori_adapter;
+	private MemoriCursorAdapter memori_adapter;
 	private static final int MEMORI_LOADER = 0;
 	
     @Override
@@ -22,9 +23,9 @@ public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memori);
         
-		String[] columns = new String[] { MediaStore.Images.Media.DATA };
-		int[] to = new int[] { R.id.txt_photo_url };
-        memori_adapter = new SimpleCursorAdapter(this,
+		String[] columns = new String[] { MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATA };
+		int[] to = new int[] { R.id.txt_photo_url, R.id.img_photo };
+        memori_adapter = new MemoriCursorAdapter(this,
 				R.layout.memori_item, null, columns, to, 0);
         ListView lst_memori = (ListView) findViewById(R.id.lst_memori);
         lst_memori.setAdapter(memori_adapter);
