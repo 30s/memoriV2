@@ -3,6 +3,7 @@ package com.xtremeprog.memoriv2.adapters;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -16,10 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.models.Memori;
+import com.xtremeprog.memoriv2.zxing.Contents;
+import com.xtremeprog.memoriv2.zxing.Intents;
 
 public class MemoriListAdapter extends BaseAdapter {
 	
@@ -121,6 +125,12 @@ public class MemoriListAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(MemoriListAdapter.this.context, holder.memori.get_photo_count() + "", Toast.LENGTH_SHORT).show();
+			    Intent intent = new Intent(Intents.Encode.ACTION);
+			    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			    intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
+			    intent.putExtra(Intents.Encode.DATA, "hello world!/" + holder.memori.get_photo_count());
+			    intent.putExtra(Intents.Encode.FORMAT, BarcodeFormat.QR_CODE.toString());
+			    context.startActivity(intent);				
 			}
 		});
 		return holder;
