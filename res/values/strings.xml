@@ -5,5 +5,6 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_memori">Memori</string>
     <string name="btn_qrcode">Show QRCode</string>
+    <string name="btn_scan">Scan QRCode</string>
 
 </resources>

@@ -3,25 +3,37 @@ package com.xtremeprog.memoriv2;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
 import com.xtremeprog.memoriv2.adapters.MemoriListAdapter;
+import com.xtremeprog.memoriv2.zxing.Contents;
+import com.xtremeprog.memoriv2.zxing.Intents;
 
-public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> {
+public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor>, OnClickListener {
 
 	private MemoriListAdapter memori_adapter;
 	private static final int MEMORI_LOADER = 0;
+	private static final int RESULT_SCAN = 100;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memori);
+        
+        Button btn_scan = (Button) findViewById(R.id.btn_scan);
+        btn_scan.setOnClickListener(this);
         
         ListView lst_memori = (ListView) findViewById(R.id.lst_memori);
         memori_adapter = new MemoriListAdapter(getBaseContext());
@@ -72,5 +84,20 @@ public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor> 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		memori_adapter.load_memoris(null);
+	}
+
+	@Override
+	public void onClick(View v) {
+	    Intent intent = new Intent(Intents.Scan.ACTION);
+	    startActivityForResult(intent, RESULT_SCAN);				
 	}    
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if ( requestCode == RESULT_SCAN && resultCode == RESULT_OK ) {
+			String text = data.getExtras().getString(Intents.Scan.RESULT);
+			Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
+		}
+	}
 }
