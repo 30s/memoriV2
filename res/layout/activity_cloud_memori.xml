@@ -3,16 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-    <Button android:id="@+id/btn_cloud_memori"
+
+    <TextView
+        android:id="@+id/txt_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_cloud_memori"/>
-    
-    <ListView android:id="@+id/lst_memori"
+        android:textSize="16dp" />
+
+    <Button
+        android:id="@+id/btn_scan"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        
-    </ListView>
+        android:layout_height="wrap_content"
+        android:text="@string/btn_scan" />
 
 </LinearLayout>

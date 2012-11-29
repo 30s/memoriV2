@@ -9,7 +9,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    
+
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -22,6 +22,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".CloudMemoriActivity"
+            android:label="@string/title_activity_cloud_memori" >
         </activity>
     </application>
 
