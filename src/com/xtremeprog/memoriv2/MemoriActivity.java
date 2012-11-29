@@ -1,5 +1,7 @@
 package com.xtremeprog.memoriv2;
 
+import java.util.Date;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.xtremeprog.memoriv2.adapters.MemoriListAdapter;
+import com.xtremeprog.memoriv2.utils.Preferences;
 import com.xtremeprog.memoriv2.utils.Utils;
 
 public class MemoriActivity extends Activity implements
@@ -91,11 +94,22 @@ public class MemoriActivity extends Activity implements
 	}
 
 	@Override
-	public void onClick(View v) {
+	public void onClick(View v) {		
 		if (v.getId() == R.id.btn_cloud_memori) {
 			Context context = getBaseContext();
-			new LoginTask().execute(context.getString(R.string.username),
-					context.getString(R.string.password));
+			
+			Date now = new Date();
+			long expire = Preferences.getExpire(context) * 1000;
+
+			if (Preferences.getToken(context) != null
+					&& now.getTime() < expire) {
+				Intent intent = new Intent(getBaseContext(),
+						CloudMemoriActivity.class);
+				startActivity(intent);
+			} else {
+				new LoginTask().execute(context.getString(R.string.username),
+						context.getString(R.string.password));
+			}			
 		}
 	}
 

@@ -20,9 +20,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     
-    <Button android:id="@+id/btn_qrcode"
+    <Button android:id="@+id/btn_upload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_qrcode"/>
+        android:text="@string/btn_upload"/>
+    
+<!--     <Button android:id="@+id/btn_qrcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_qrcode"/> -->
     
 </LinearLayout>

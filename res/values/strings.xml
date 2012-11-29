@@ -13,5 +13,6 @@
     <string name="btn_scan">Scan QRCode</string>
     <string name="title_activity_cloud_memori">CloudMemoriActivity</string>
     <string name="btn_cloud_memori">Cloud Memori</string>
+    <string name="btn_upload">Upload Memori</string>
 
 </resources>
