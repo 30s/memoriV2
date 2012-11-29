@@ -1,10 +1,17 @@
 <resources>
 
+    <string name="debug_server">http://192.168.1.123:8000</string>
+    <string name="production_server">http://api.memori.cn</string>
+    <string name="apikey">500e29a921085c3e19000000</string>
+    <string name="username">rzheng@xtremeprog.com</string>
+    <string name="password">123456</string>
+    
     <string name="app_name">memoriV2</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_memori">Memori</string>
     <string name="btn_qrcode">Show QRCode</string>
     <string name="btn_scan">Scan QRCode</string>
+    <string name="txt_username">Login…</string>
 
 </resources>

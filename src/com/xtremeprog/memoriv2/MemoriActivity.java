@@ -1,11 +1,16 @@
 package com.xtremeprog.memoriv2;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
@@ -14,11 +19,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.zxing.BarcodeFormat;
 import com.xtremeprog.memoriv2.adapters.MemoriListAdapter;
-import com.xtremeprog.memoriv2.zxing.Contents;
+import com.xtremeprog.memoriv2.utils.Utils;
 import com.xtremeprog.memoriv2.zxing.Intents;
 
 public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor>, OnClickListener {
@@ -32,14 +37,20 @@ public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor>,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memori);
         
+        Context context = getBaseContext();
+        
         Button btn_scan = (Button) findViewById(R.id.btn_scan);
         btn_scan.setOnClickListener(this);
         
         ListView lst_memori = (ListView) findViewById(R.id.lst_memori);
-        memori_adapter = new MemoriListAdapter(getBaseContext());
+        memori_adapter = new MemoriListAdapter(context);
         lst_memori.setAdapter(memori_adapter);
         
         getLoaderManager().initLoader(MEMORI_LOADER, null, this);
+        
+        
+        new LoginTask().execute(context.getString(R.string.username), 
+        		context.getString(R.string.password));
     }
 
     @Override
@@ -100,4 +111,30 @@ public class MemoriActivity extends Activity implements LoaderCallbacks<Cursor>,
 			Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	private class LoginTask extends AsyncTask<String, Void, JSONObject> {
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+			return Utils.login(getApplicationContext(), params[0],
+					params[1]);
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject ret) {		
+			super.onPostExecute(ret);
+			if (ret.has("token")) {
+				TextView txt_username = (TextView) findViewById(R.id.txt_username);
+				txt_username.setText(getBaseContext().getString(R.string.username));
+			} else {
+				try {
+					Toast.makeText(getApplicationContext(),
+							ret.getString("message"), Toast.LENGTH_SHORT).show();
+				} catch (JSONException e) {
+					Toast.makeText(getApplicationContext(),
+							"Login failed!", Toast.LENGTH_SHORT).show();
+				}
+			}			
+		}
+	}	
 }
