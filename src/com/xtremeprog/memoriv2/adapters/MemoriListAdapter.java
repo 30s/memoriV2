@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.zxing.BarcodeFormat;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.CloudMemoriActivity;
@@ -28,8 +27,6 @@ import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
 import com.xtremeprog.memoriv2.utils.Utils;
-import com.xtremeprog.memoriv2.zxing.Contents;
-import com.xtremeprog.memoriv2.zxing.Intents;
 
 public class MemoriListAdapter extends BaseAdapter {
 
