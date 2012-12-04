@@ -38,6 +38,7 @@ public class MemoriListAdapter extends BaseAdapter {
 		public TextView txt_count;
 		public Button btn_upload;
 		public Memori memori;
+		public Button btn_show_all;
 	}
 
 	private final String TAG = MemoriListAdapter.class.getSimpleName();
@@ -133,11 +134,18 @@ public class MemoriListAdapter extends BaseAdapter {
 		holder.img_photo = (ImageView) convertView.findViewById(R.id.img_photo);
 		holder.txt_count = (TextView) convertView.findViewById(R.id.txt_count);
 		holder.btn_upload = (Button) convertView.findViewById(R.id.btn_upload);
+		holder.btn_show_all = (Button) convertView.findViewById(R.id.btn_show_all);
 		holder.btn_upload.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				new CreateMemoriTask().execute(holder.memori);
+			}
+		});
+		holder.btn_show_all.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(context, "show all", Toast.LENGTH_SHORT).show();
 			}
 		});
 		return holder;
