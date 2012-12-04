@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
+import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.R;
@@ -44,7 +45,9 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		this.context = context;
 		img_loader = ImageLoader.getInstance();
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				context).memoryCacheExtraOptions(80, 80).build();
+				context).memoryCacheExtraOptions(80, 80)
+				.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
+				.build();
 		img_loader.init(config);
 	}
 

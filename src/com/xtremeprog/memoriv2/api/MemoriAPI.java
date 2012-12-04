@@ -15,6 +15,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 
+import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
 import com.xtremeprog.memoriv2.net.ApiBase;
 import com.xtremeprog.memoriv2.net.ApiRequest;
@@ -45,13 +46,14 @@ public class MemoriAPI extends ApiBase implements IMemoriAPI {
 		}
 		return INSTANCE;
 	}
-	
+
 	@Override
 	public ApiResponse execute(ApiRequest request, ProgressListener listener)
 			throws ClientProtocolException, IOException {
-		request.addHeader("AUTHORIZATION", "Bearer " + Preferences.getToken(context));
+		request.addHeader("AUTHORIZATION",
+				"Bearer " + Preferences.getToken(context));
 		return super.execute(request, listener);
-	}	
+	}
 
 	private boolean writeBitmapToFile(Bitmap bitmap, File file)
 			throws IOException, FileNotFoundException {
@@ -101,7 +103,7 @@ public class MemoriAPI extends ApiBase implements IMemoriAPI {
 		} else {
 			request.addFileParameter("photo", file);
 		}
-		if ( (voiceFile != null) && voiceFile.exists()) {
+		if ((voiceFile != null) && voiceFile.exists()) {
 			request.addFileParameter("voice", voiceFile);
 		}
 		ApiResponse response = execute(request, progressListener);
@@ -111,14 +113,27 @@ public class MemoriAPI extends ApiBase implements IMemoriAPI {
 
 		return new JSONObject(response.getContentAsString());
 	}
-	
-	public JSONObject memori_join(String url, ProgressListener progressListener)
-			throws ClientProtocolException, IOException, JSONException {
-		ApiRequest request = new ApiRequest(ApiRequest.GET,
-				url, ApiRequest.UPLOAD);
+
+	public JSONObject memori_create(Memori memori,
+			ProgressListener progressListener) throws ClientProtocolException,
+			IOException, JSONException {
+		ApiRequest request = new ApiRequest(ApiRequest.POST,
+				"/v1/memori/create/", ApiRequest.UPLOAD);
+		request.addParameter("start_timestamp", memori.get_photo(0)
+				.getDate_taken() / 1000 + "");
+
 		ApiResponse response = execute(request, progressListener);
 
-		return new JSONObject(response.getContentAsString());		
-	}	
+		return new JSONObject(response.getContentAsString());
+	}
+
+	public JSONObject memori_join(String url, ProgressListener progressListener)
+			throws ClientProtocolException, IOException, JSONException {
+		ApiRequest request = new ApiRequest(ApiRequest.GET, url,
+				ApiRequest.UPLOAD);
+		ApiResponse response = execute(request, progressListener);
+
+		return new JSONObject(response.getContentAsString());
+	}
 
 }

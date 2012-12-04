@@ -19,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.xtremeprog.memoriv2.adapters.CloudMemoriListAdapter;
 import com.xtremeprog.memoriv2.api.MemoriAPI;

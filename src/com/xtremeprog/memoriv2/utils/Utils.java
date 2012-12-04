@@ -27,7 +27,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.xtremeprog.memoriv2.R;
-import com.xtremeprog.memoriv2.models.Memori;
 
 public class Utils {
 
@@ -96,55 +95,6 @@ public class Utils {
 			} else {
 				Preferences.expireToken(context);
 			}
-		} catch (UnsupportedEncodingException e) {
-			ret.put("message", "Encoding error!");
-		} catch (MalformedURLException e) {
-			ret.put("message", "URL error!");
-		} catch (IOException e) {
-			ret.put("message", "Open connection error!");
-		} catch (JSONException e) {
-			ret.put("message", "Decode response error!");
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
-			}
-		}
-
-		if (json == null) {
-			json = new JSONObject(ret);
-		}
-		return json;
-	}
-
-	public static JSONObject create_memori(Context context, Memori memori) {
-		InputStream is = null;
-		OutputStream os = null;
-		HttpURLConnection conn = null;
-
-		HashMap<String, String> ret = new HashMap<String, String>();
-		JSONObject json = null;
-		try {
-			String query = String.format(
-					"start_timestamp=%s",
-					URLEncoder.encode(memori.get_photo(0).getDate_taken()
-							/ 1000 + "", "utf-8"));
-
-			URL url = new URL(Preferences.getServer(context)
-					+ "/v1/memori/create/");
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("POST");
-			conn.setDoInput(true);
-			conn.setDoOutput(true);
-			conn.setRequestProperty("AUTHORIZATION",
-					"Bearer " + Preferences.getToken(context));
-			conn.connect();
-
-			os = conn.getOutputStream();
-			os.write(query.getBytes("utf-8"));
-
-			conn.connect();
-			is = conn.getInputStream();
-			json = new JSONObject(Utils.read(is));
 		} catch (UnsupportedEncodingException e) {
 			ret.put("message", "Encoding error!");
 		} catch (MalformedURLException e) {

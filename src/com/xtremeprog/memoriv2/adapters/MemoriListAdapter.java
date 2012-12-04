@@ -28,7 +28,6 @@ import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
-import com.xtremeprog.memoriv2.utils.Utils;
 
 public class MemoriListAdapter extends BaseAdapter {
 
@@ -149,16 +148,30 @@ public class MemoriListAdapter extends BaseAdapter {
 		@Override
 		protected JSONObject doInBackground(Memori... params) {
 			cur_memori = params[0];
-			return Utils.create_memori(context, params[0]);
+			JSONObject ret = null;
+			try {
+				ret = api_client.memori_create(cur_memori, null);
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return ret;
 		}
 
 		@Override
 		protected void onPostExecute(JSONObject ret) {
 			super.onPostExecute(ret);
 			
-			String guid;
+			String guid = null;
 			try {
 				guid = ret.getString("id");
+			} catch (NullPointerException e1) {
+				Toast.makeText(context, "Create memori failed!",
+						Toast.LENGTH_SHORT).show();				
+				return;
 			} catch (JSONException e1) {
 				Toast.makeText(context, "Create memori failed!",
 						Toast.LENGTH_SHORT).show();				
@@ -183,6 +196,8 @@ public class MemoriListAdapter extends BaseAdapter {
 					Toast.makeText(context, ret.getString("error_message"),
 							Toast.LENGTH_SHORT).show();				
 				}
+				Toast.makeText(context, ret.getString("One photo uploaded!"),
+						Toast.LENGTH_SHORT).show();								
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

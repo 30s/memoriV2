@@ -7,6 +7,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
 import com.xtremeprog.memoriv2.net.HttpEntityWithProgress.ProgressListener;
 
@@ -15,6 +16,9 @@ public interface IMemoriAPI {
 			String memori, ProgressListener progressListener)
 			throws ClientProtocolException, IOException, JSONException;
 
+	JSONObject memori_create(Memori memori, ProgressListener progressListener)
+			throws ClientProtocolException, IOException, JSONException;
+	
 	JSONObject memori_join(String url, ProgressListener progressListener)
 			throws ClientProtocolException, IOException, JSONException;
 }
