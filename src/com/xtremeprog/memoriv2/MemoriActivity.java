@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -58,6 +59,18 @@ public class MemoriActivity extends Activity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_memori, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_settings:
+			Toast.makeText(getApplicationContext(), "settings", Toast.LENGTH_LONG).show();
+			break;
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -121,7 +134,8 @@ public class MemoriActivity extends Activity implements
 		@Override
 		protected Boolean doInBackground(String... params) {
 			try {
-				JSONObject ret = api_client.account_login(params[0], params[1], null);
+				JSONObject ret = api_client.account_login(params[0], params[1],
+						null);
 				if (ret.has("token")) {
 					Preferences.setLoginInfo(getApplicationContext(),
 							ret.getString("token"),
@@ -147,7 +161,7 @@ public class MemoriActivity extends Activity implements
 		@Override
 		protected void onPostExecute(Boolean ret) {
 			super.onPostExecute(ret);
-			if ( ret ) {
+			if (ret) {
 				Intent intent = new Intent(getBaseContext(),
 						CloudMemoriActivity.class);
 				startActivity(intent);
