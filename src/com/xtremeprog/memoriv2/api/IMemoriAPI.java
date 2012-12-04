@@ -14,4 +14,7 @@ public interface IMemoriAPI {
 	JSONObject photo_upload(File file, Photo photo, File voiceFile,
 			String memori, ProgressListener progressListener)
 			throws ClientProtocolException, IOException, JSONException;
+
+	JSONObject memori_join(String url, ProgressListener progressListener)
+			throws ClientProtocolException, IOException, JSONException;
 }

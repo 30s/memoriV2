@@ -111,5 +111,14 @@ public class MemoriAPI extends ApiBase implements IMemoriAPI {
 
 		return new JSONObject(response.getContentAsString());
 	}
+	
+	public JSONObject memori_join(String url, ProgressListener progressListener)
+			throws ClientProtocolException, IOException, JSONException {
+		ApiRequest request = new ApiRequest(ApiRequest.GET,
+				url, ApiRequest.UPLOAD);
+		ApiResponse response = execute(request, progressListener);
+
+		return new JSONObject(response.getContentAsString());		
+	}	
 
 }

@@ -1,7 +1,9 @@
 package com.xtremeprog.memoriv2;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xtremeprog.memoriv2.adapters.CloudMemoriListAdapter;
+import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.models.CloudMemori;
 import com.xtremeprog.memoriv2.utils.Utils;
 import com.xtremeprog.memoriv2.zxing.Intents;
@@ -29,6 +32,7 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 	private static final int RESULT_SCAN = 100;
 	private ArrayList<JSONObject> memoris;
 	private CloudMemoriListAdapter memori_adapter;
+	private MemoriAPI api_client;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_cloud_memori);
 
 		memoris = new ArrayList<JSONObject>();
+		api_client = (MemoriAPI) MemoriAPI.getInstance(getBaseContext());
 
 		TextView txt_username = (TextView) findViewById(R.id.txt_username);
 		txt_username.setText("Cloud Account: "
@@ -70,7 +75,8 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == RESULT_SCAN && resultCode == RESULT_OK) {
 			String text = data.getExtras().getString(Intents.Scan.RESULT);
-			Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
+			new JoinMemoriTask().execute(text);
+			// Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -93,6 +99,7 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 					// login
 				}
 			} catch (JSONException e) {
+				memori_adapter.clear_memoris();
 				for (int i = 0; i < memoris.size(); i++) {
 					JSONObject j_memori = memoris.get(i);
 					String guid;
@@ -121,5 +128,36 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 				memori_adapter.notifyDataSetChanged();
 			}
 		}
+	}
+
+	private class JoinMemoriTask extends AsyncTask<String, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			String url = params[0];
+			JSONObject ret = null;
+			try {
+				ret = api_client.memori_join(url, null);
+				if ( ret.has("status") ) {
+					return true;
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if ( result ) {
+				new LoadMemoriTask().execute();
+			}
+		}
+		
 	}
 }

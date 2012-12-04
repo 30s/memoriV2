@@ -45,7 +45,7 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		img_loader = ImageLoader.getInstance();
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				context).memoryCacheExtraOptions(80, 80).build();
-		img_loader.init(config);	
+		img_loader.init(config);
 	}
 
 	public void add_memori(CloudMemori memori) {
@@ -82,9 +82,9 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		CloudMemori memori = (CloudMemori) getItem(position);
 		holder.memori = memori;
 		String cover = memori.get_cover();
-		if ( !cover.equals("") ) {
-			img_loader.displayImage(Preferences.getServer(context) + "/photo/" + cover + "/?size=285",
-					holder.img_cover);
+		if (!cover.equals("")) {
+			img_loader.displayImage(Preferences.getServer(context) + "/photo/"
+					+ cover + "/?size=285", holder.img_cover);
 		} else {
 			holder.img_cover.setImageResource(R.drawable.empty_photo);
 		}
@@ -98,12 +98,13 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 
 	private ViewHolder buildTag(View convertView) {
 		final ViewHolder holder = new ViewHolder();
-		holder.img_cover = (ImageView) convertView.findViewById(R.id.img_cover);		
+		holder.img_cover = (ImageView) convertView.findViewById(R.id.img_cover);
 		holder.txt_start_timestamp = (TextView) convertView
 				.findViewById(R.id.txt_start_timestamp);
 		holder.txt_owners = (TextView) convertView
 				.findViewById(R.id.txt_owners);
-		holder.txt_photos = (TextView) convertView.findViewById(R.id.txt_photos);
+		holder.txt_photos = (TextView) convertView
+				.findViewById(R.id.txt_photos);
 		holder.btn_qrcode = (Button) convertView.findViewById(R.id.btn_qrcode);
 
 		holder.btn_qrcode.setOnClickListener(new OnClickListener() {
@@ -113,10 +114,9 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 				Intent intent = new Intent(Intents.Encode.ACTION);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
-				intent.putExtra(Intents.Encode.DATA,
-						Preferences.getServer(context) + "/v1/memori/join/?id="
-								+ holder.memori.get_guid() + "&invite_code="
-								+ holder.memori.get_invite_code());
+				intent.putExtra(Intents.Encode.DATA, "/v1/memori/join/?id="
+						+ holder.memori.get_guid() + "&invite_code="
+						+ holder.memori.get_invite_code());
 				intent.putExtra(Intents.Encode.FORMAT,
 						BarcodeFormat.QR_CODE.toString());
 				context.startActivity(intent);
@@ -125,6 +125,10 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		});
 
 		return holder;
+	}
+
+	public void clear_memoris() {
+		memoris.clear();
 	}
 
 }
