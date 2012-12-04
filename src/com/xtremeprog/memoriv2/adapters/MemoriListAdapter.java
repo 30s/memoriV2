@@ -120,6 +120,7 @@ public class MemoriListAdapter extends BaseAdapter {
 		Memori memori = (Memori) getItem(position);
 		holder.memori = memori;
 		holder.txt_photo_url.setText(memori.get_cover());
+		holder.img_photo.setImageResource(R.drawable.empty_photo);
 		img_loader.displayImage("file://" + memori.get_cover(),
 				holder.img_photo);
 		holder.txt_count.setText(memori.get_photo_count() + "");

@@ -83,8 +83,10 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		holder.memori = memori;
 		String cover = memori.get_cover();
 		if ( !cover.equals("") ) {
-			img_loader.displayImage(Preferences.getServer(context) + "/photo/" + cover + "/",
+			img_loader.displayImage(Preferences.getServer(context) + "/photo/" + cover + "/?size=285",
 					holder.img_cover);
+		} else {
+			holder.img_cover.setImageResource(R.drawable.empty_photo);
 		}
 		holder.txt_start_timestamp.setText("Start Time: "
 				+ memori.get_start_timestamp() + "");
