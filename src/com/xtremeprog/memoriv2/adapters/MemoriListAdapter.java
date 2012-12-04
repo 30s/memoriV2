@@ -133,17 +133,6 @@ public class MemoriListAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				new CreateMemoriTask().execute(holder.memori);
-//				Toast.makeText(MemoriListAdapter.this.context,
-//						holder.memori.get_photo_count() + "",
-//						Toast.LENGTH_SHORT).show();
-//				Intent intent = new Intent(Intents.Encode.ACTION);
-//				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//				intent.putExtra(Intents.Encode.TYPE, Contents.Type.TEXT);
-//				intent.putExtra(Intents.Encode.DATA, "hello world!/"
-//						+ holder.memori.get_photo_count());
-//				intent.putExtra(Intents.Encode.FORMAT,
-//						BarcodeFormat.QR_CODE.toString());
-//				context.startActivity(intent);
 			}
 		});
 		return holder;
@@ -159,7 +148,7 @@ public class MemoriListAdapter extends BaseAdapter {
 		@Override
 		protected void onPostExecute(JSONObject ret) {
 			super.onPostExecute(ret);
-			if (ret.has("id")) {
+			if (ret.has("id")) {				
 				Intent intent = new Intent(context, CloudMemoriActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(intent);
