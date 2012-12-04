@@ -20,6 +20,10 @@ public interface IMemoriAPI {
 			String memori, ProgressListener progressListener)
 			throws ClientProtocolException, IOException, JSONException;
 
+	JSONObject memori(String next,
+			ProgressListener progressListener) throws ClientProtocolException,
+			IOException, JSONException;
+
 	JSONObject memori_create(Memori memori, ProgressListener progressListener)
 			throws ClientProtocolException, IOException, JSONException;
 

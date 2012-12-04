@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,13 +22,11 @@ import android.widget.TextView;
 import com.xtremeprog.memoriv2.adapters.CloudMemoriListAdapter;
 import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.models.CloudMemori;
-import com.xtremeprog.memoriv2.utils.Utils;
 import com.xtremeprog.memoriv2.zxing.Intents;
 
 public class CloudMemoriActivity extends Activity implements OnClickListener {
 
 	private static final int RESULT_SCAN = 100;
-	private ArrayList<JSONObject> memoris;
 	private CloudMemoriListAdapter memori_adapter;
 	private MemoriAPI api_client;
 
@@ -38,7 +35,6 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cloud_memori);
 
-		memoris = new ArrayList<JSONObject>();
 		api_client = (MemoriAPI) MemoriAPI.getInstance(getBaseContext());
 
 		TextView txt_username = (TextView) findViewById(R.id.txt_username);
@@ -74,39 +70,46 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == RESULT_SCAN && resultCode == RESULT_OK) {
 			String text = data.getExtras().getString(Intents.Scan.RESULT);
+			memori_adapter.clear_memoris();
 			new JoinMemoriTask().execute(text);
-			// Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
 		}
 	}
 
-	private class LoadMemoriTask extends AsyncTask<Void, Void, JSONObject> {
+	private class LoadMemoriTask extends AsyncTask<String, Void, JSONObject> {
 
 		@Override
-		protected JSONObject doInBackground(Void... params) {
-			return Utils.load_memori_list(getApplicationContext(), memoris);
+		protected JSONObject doInBackground(String... params) {
+			JSONObject ret = null;
+			try {
+				if (params.length != 0) {
+					ret = api_client.memori(params[0], null);
+				} else {
+					ret = api_client.memori(null, null);
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return ret;
 		}
 
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
-			Context context = getApplicationContext();
-			try {
-				String message = result.getString("message");
-				if (message.equals("401")) {
-					String username = context.getString(R.string.username);
-					String password = context.getString(R.string.password);
-					// login
-				}
-			} catch (JSONException e) {
-				memori_adapter.clear_memoris();
-				for (int i = 0; i < memoris.size(); i++) {
-					JSONObject j_memori = memoris.get(i);
-					String guid;
-					String invite_code;
-					long start_timestamp;
-					ArrayList<String> owners = new ArrayList<String>();
-					ArrayList<String> photos = new ArrayList<String>();
-					try {
+
+			if (result != null && result.has("objects")) {
+				try {
+					JSONArray json_array = result.getJSONArray("objects");
+					for (int i = 0; i < json_array.length(); i++) {
+						JSONObject j_memori = json_array.getJSONObject(i);
+						String guid;
+						String invite_code;
+						long start_timestamp;
+						ArrayList<String> owners = new ArrayList<String>();
+						ArrayList<String> photos = new ArrayList<String>();
 						guid = j_memori.getString("id");
 						invite_code = j_memori.getString("invite_code");
 						start_timestamp = j_memori.getLong("start_timestamp");
@@ -120,12 +123,25 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 						}
 						memori_adapter.add_memori(new CloudMemori(guid,
 								invite_code, start_timestamp, owners, photos));
-					} catch (JSONException e1) {
-						e1.printStackTrace();
-					}
+
+					} // endfor
+					memori_adapter.notifyDataSetChanged();
+				} catch (JSONException e1) {
+					e1.printStackTrace();
 				}
-				memori_adapter.notifyDataSetChanged();
-			}
+			}// endif
+			
+			if ( result != null && result.has("meta") ) {
+				String next = null;
+				try {
+					next = result.getJSONObject("meta").getString("next");
+					if ( !next.equals("null") ) {
+						new LoadMemoriTask().execute(next);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			} // endif
 		}
 	}
 
@@ -137,7 +153,7 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 			JSONObject ret = null;
 			try {
 				ret = api_client.memori_join(url, null);
-				if ( ret.has("status") ) {
+				if (ret.has("status")) {
 					return true;
 				}
 			} catch (ClientProtocolException e) {
@@ -149,14 +165,14 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 			}
 			return false;
 		}
-		
+
 		@Override
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
-			if ( result ) {
+			if (result) {
 				new LoadMemoriTask().execute();
 			}
 		}
-		
+
 	}
 }

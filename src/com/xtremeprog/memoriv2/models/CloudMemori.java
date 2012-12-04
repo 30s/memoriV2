@@ -15,8 +15,8 @@ public class CloudMemori {
 		this.set_guid(guid);
 		this.set_invite_code(invite_code);
 		this.start_timestamp = start_timestamp;
-		this.set_owners((ArrayList<String>) owners.clone());
-		this.setPhotos((ArrayList<String>) photos.clone());
+		this.owners = owners;
+		this.photos = photos;
 	}
 	
 	public String get_cover() {
