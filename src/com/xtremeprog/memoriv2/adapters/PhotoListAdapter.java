@@ -67,10 +67,7 @@ public class PhotoListAdapter extends BaseAdapter {
 		Photo photo = (Photo) getItem(position);
 		holder.photo = photo;
 		holder.img_photo.setImageResource(R.drawable.empty_photo);
-		LayoutParams params = holder.img_photo.getLayoutParams();		
-		if ( params != null ) {
-			img_loader.displayImage("file://" + photo.getPath(), holder.img_photo);
-		} 
+		img_loader.displayImage("file://" + photo.getPath(), holder.img_photo); 
 		
 		return convertView;
 	}
