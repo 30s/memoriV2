@@ -57,64 +57,6 @@ public class Utils {
 		return sb.toString();
 	}
 
-	public static JSONObject login(Context context, String username,
-			String password) {
-		InputStream is = null;
-		OutputStream os = null;
-		HttpURLConnection conn = null;
-
-		HashMap<String, String> ret = new HashMap<String, String>();
-		JSONObject json = null;
-		ret.put("result", "failed");
-
-		try {
-			String query = String.format(
-					"username=%s&password=%s&client_id=%s", URLEncoder.encode(
-							username, "utf-8"), URLEncoder.encode(password,
-							"utf-8"), URLEncoder.encode(
-							context.getString(R.string.apikey), "utf-8"));
-			URL url = new URL(Preferences.getServer(context)
-					+ "/v1/account/login/");
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setReadTimeout(10000);
-			conn.setConnectTimeout(15000);
-			conn.setRequestMethod("POST");
-			conn.setDoInput(true);
-			conn.setDoOutput(true);
-			os = conn.getOutputStream();
-			os.write(query.getBytes("utf-8"));
-
-			conn.connect();
-			is = conn.getInputStream();
-			json = new JSONObject(Utils.read(is));
-			if (json.has("token")) {
-				Preferences
-						.setLoginInfo(context, json.getString("token"),
-								json.getString("refresh_token"),
-								json.getLong("expire"));
-			} else {
-				Preferences.expireToken(context);
-			}
-		} catch (UnsupportedEncodingException e) {
-			ret.put("message", "Encoding error!");
-		} catch (MalformedURLException e) {
-			ret.put("message", "URL error!");
-		} catch (IOException e) {
-			ret.put("message", "Open connection error!");
-		} catch (JSONException e) {
-			ret.put("message", "Decode response error!");
-		} finally {
-			if (conn != null) {
-				conn.disconnect();
-			}
-		}
-
-		if (json == null) {
-			json = new JSONObject(ret);
-		}
-		return json;
-	}
-
 	public static JSONObject load_memori_list(Context context,
 			ArrayList<JSONObject> memoris) {
 		HashMap<String, String> ret = new HashMap<String, String>();

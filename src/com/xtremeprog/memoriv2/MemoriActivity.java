@@ -1,7 +1,9 @@
 package com.xtremeprog.memoriv2;
 
+import java.io.IOException;
 import java.util.Date;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,12 +26,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.xtremeprog.memoriv2.adapters.MemoriListAdapter;
+import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.utils.Preferences;
-import com.xtremeprog.memoriv2.utils.Utils;
 
 public class MemoriActivity extends Activity implements
 		LoaderCallbacks<Cursor>, OnClickListener {
 
+	private MemoriAPI api_client;
 	private MemoriListAdapter memori_adapter;
 	private static final int MEMORI_LOADER = 0;
 
@@ -38,8 +41,9 @@ public class MemoriActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_memori);
 
-		Context context = getBaseContext();
+		api_client = (MemoriAPI) MemoriAPI.getInstance(getApplicationContext());
 
+		Context context = getBaseContext();
 		Button btn_cloud_memori = (Button) findViewById(R.id.btn_cloud_memori);
 		btn_cloud_memori.setOnClickListener(this);
 
@@ -94,48 +98,59 @@ public class MemoriActivity extends Activity implements
 	}
 
 	@Override
-	public void onClick(View v) {		
+	public void onClick(View v) {
 		if (v.getId() == R.id.btn_cloud_memori) {
 			Context context = getBaseContext();
-			
+
 			Date now = new Date();
 			long expire = Preferences.getExpire(context) * 1000;
 
-			if (Preferences.getToken(context) != null
-					&& now.getTime() < expire) {
+			if (Preferences.getToken(context) != null && now.getTime() < expire) {
 				Intent intent = new Intent(getBaseContext(),
 						CloudMemoriActivity.class);
 				startActivity(intent);
 			} else {
 				new LoginTask().execute(context.getString(R.string.username),
 						context.getString(R.string.password));
-			}			
+			}
 		}
 	}
 
-	private class LoginTask extends AsyncTask<String, Void, JSONObject> {
+	private class LoginTask extends AsyncTask<String, Void, Boolean> {
 
 		@Override
-		protected JSONObject doInBackground(String... params) {
-			return Utils.login(getApplicationContext(), params[0], params[1]);
-		}
-
-		@Override
-		protected void onPostExecute(JSONObject ret) {
-			super.onPostExecute(ret);
-			if (ret.has("token")) {
-				Intent intent = new Intent(getBaseContext(),
-						CloudMemoriActivity.class);
-				startActivity(intent);
-			} else {
-				try {
+		protected Boolean doInBackground(String... params) {
+			try {
+				JSONObject ret = api_client.account_login(params[0], params[1], null);
+				if (ret.has("token")) {
+					Preferences.setLoginInfo(getApplicationContext(),
+							ret.getString("token"),
+							ret.getString("refresh_token"),
+							ret.getLong("expire"));
+					return true;
+				} else {
 					Toast.makeText(getApplicationContext(),
 							ret.getString("message"), Toast.LENGTH_SHORT)
 							.show();
-				} catch (JSONException e) {
-					Toast.makeText(getApplicationContext(), "Login failed!",
-							Toast.LENGTH_SHORT).show();
+					return false;
 				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean ret) {
+			super.onPostExecute(ret);
+			if ( ret ) {
+				Intent intent = new Intent(getBaseContext(),
+						CloudMemoriActivity.class);
+				startActivity(intent);
 			}
 		}
 	}

@@ -15,6 +15,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 
+import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
 import com.xtremeprog.memoriv2.net.ApiBase;
@@ -50,11 +51,27 @@ public class MemoriAPI extends ApiBase implements IMemoriAPI {
 	@Override
 	public ApiResponse execute(ApiRequest request, ProgressListener listener)
 			throws ClientProtocolException, IOException {
-		request.addHeader("AUTHORIZATION",
-				"Bearer " + Preferences.getToken(context));
+		if ( !request.getPath().equals("/v1/account/login/") ) {
+			request.addHeader("AUTHORIZATION",
+					"Bearer " + Preferences.getToken(context));	
+		}
 		return super.execute(request, listener);
 	}
 
+	public JSONObject account_login(String username, String password,
+			ProgressListener progressListener) throws ClientProtocolException,
+			IOException, JSONException {
+		ApiRequest request = new ApiRequest(ApiRequest.POST,
+				"/v1/account/login/", ApiRequest.UPLOAD);
+		request.addParameter("username", username);
+		request.addParameter("password", password);
+		request.addParameter("client_id", context.getString(R.string.apikey));
+
+		ApiResponse response = execute(request, progressListener);
+
+		return new JSONObject(response.getContentAsString());		
+	}
+	
 	private boolean writeBitmapToFile(Bitmap bitmap, File file)
 			throws IOException, FileNotFoundException {
 
