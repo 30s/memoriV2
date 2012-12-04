@@ -14,5 +14,10 @@
     <string name="title_activity_cloud_memori">CloudMemoriActivity</string>
     <string name="btn_cloud_memori">Cloud Memori</string>
     <string name="btn_upload">Upload Memori</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="hint_username">username</string>
+    <string name="hint_password">password</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_logout">Logout</string>
 
 </resources>

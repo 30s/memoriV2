@@ -1,11 +1,6 @@
 package com.xtremeprog.memoriv2;
 
-import java.io.IOException;
 import java.util.Date;
-
-import org.apache.http.client.ClientProtocolException;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -14,7 +9,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
@@ -24,16 +18,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.xtremeprog.memoriv2.adapters.MemoriListAdapter;
-import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.utils.Preferences;
 
 public class MemoriActivity extends Activity implements
 		LoaderCallbacks<Cursor>, OnClickListener {
 
-	private MemoriAPI api_client;
 	private MemoriListAdapter memori_adapter;
 	private static final int MEMORI_LOADER = 0;
 
@@ -41,8 +32,6 @@ public class MemoriActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_memori);
-
-		api_client = (MemoriAPI) MemoriAPI.getInstance(getApplicationContext());
 
 		Context context = getBaseContext();
 		Button btn_cloud_memori = (Button) findViewById(R.id.btn_cloud_memori);
@@ -65,7 +54,9 @@ public class MemoriActivity extends Activity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_settings:
-			Toast.makeText(getApplicationContext(), "settings", Toast.LENGTH_LONG).show();
+			Intent intent = new Intent(getBaseContext(),
+					SettingsActivity.class);
+			startActivity(intent);
 			break;
 		default:
 			break;
@@ -123,47 +114,8 @@ public class MemoriActivity extends Activity implements
 						CloudMemoriActivity.class);
 				startActivity(intent);
 			} else {
-				new LoginTask().execute(context.getString(R.string.username),
-						context.getString(R.string.password));
-			}
-		}
-	}
-
-	private class LoginTask extends AsyncTask<String, Void, Boolean> {
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-			try {
-				JSONObject ret = api_client.account_login(params[0], params[1],
-						null);
-				if (ret.has("token")) {
-					Preferences.setLoginInfo(getApplicationContext(),
-							ret.getString("token"),
-							ret.getString("refresh_token"),
-							ret.getLong("expire"));
-					return true;
-				} else {
-					Toast.makeText(getApplicationContext(),
-							ret.getString("message"), Toast.LENGTH_SHORT)
-							.show();
-					return false;
-				}
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			return false;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean ret) {
-			super.onPostExecute(ret);
-			if (ret) {
 				Intent intent = new Intent(getBaseContext(),
-						CloudMemoriActivity.class);
+						SettingsActivity.class);
 				startActivity(intent);
 			}
 		}

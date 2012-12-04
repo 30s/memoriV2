@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.xtremeprog.memoriv2.adapters.CloudMemoriListAdapter;
 import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.models.CloudMemori;
+import com.xtremeprog.memoriv2.utils.Preferences;
 import com.xtremeprog.memoriv2.zxing.Intents;
 
 public class CloudMemoriActivity extends Activity implements OnClickListener {
@@ -39,10 +40,13 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 
 		TextView txt_username = (TextView) findViewById(R.id.txt_username);
 		txt_username.setText("Cloud Account: "
-				+ getBaseContext().getString(R.string.username));
+				+ Preferences.getRememberedUsername(getApplicationContext()));
 
 		Button btn_scan = (Button) findViewById(R.id.btn_scan);
 		btn_scan.setOnClickListener(this);
+		
+		Button btn_logout = (Button) findViewById(R.id.btn_logout);
+		btn_logout.setOnClickListener(this);
 
 		ListView lst_cloud_memori = (ListView) findViewById(R.id.lst_cloud_memori);
 		memori_adapter = new CloudMemoriListAdapter(getApplicationContext());
@@ -59,9 +63,20 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		if (v.getId() == R.id.btn_scan) {
-			Intent intent = new Intent(Intents.Scan.ACTION);
+		Intent intent;
+		switch (v.getId()) {
+		case R.id.btn_scan:
+			intent = new Intent(Intents.Scan.ACTION);
 			startActivityForResult(intent, RESULT_SCAN);
+			break;
+		case R.id.btn_logout:
+			Preferences.expireToken(getApplicationContext());
+			intent = new Intent(getBaseContext(), MemoriActivity.class);
+			startActivity(intent);
+			finish();
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -130,12 +145,12 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 					e1.printStackTrace();
 				}
 			}// endif
-			
-			if ( result != null && result.has("meta") ) {
+
+			if (result != null && result.has("meta")) {
 				String next = null;
 				try {
 					next = result.getJSONObject("meta").getString("next");
-					if ( !next.equals("null") ) {
+					if (!next.equals("null")) {
 						new LoadMemoriTask().execute(next);
 					}
 				} catch (JSONException e) {

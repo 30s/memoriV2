@@ -13,11 +13,12 @@ public class Preferences {
 	public static boolean DEBUG = true;
 	public static String SERVER;
 
-	public static void setLoginInfo(Context context, String token,
-			String refresh_token, long expire) {
+	public static void setLoginInfo(Context context, String username,
+			String token, String refresh_token, long expire) {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
-		preferences.edit().putString("token", token)
+		preferences.edit().putString("username", username)
+				.putString("token", token)
 				.putString("refresh_token", refresh_token)
 				.putLong("expire", expire).commit();
 	}
@@ -67,12 +68,12 @@ public class Preferences {
 
 		return Preferences.SERVER;
 	}
-	
+
 	public static void setSyncTime(Context context) {
 		PreferenceManager.getDefaultSharedPreferences(context).edit()
-			.putLong("sync_time", new Date().getTime() / 1000).commit();
+				.putLong("sync_time", new Date().getTime() / 1000).commit();
 	}
-	
+
 	public static long getSyncTime(Context context) {
 		return PreferenceManager.getDefaultSharedPreferences(context).getLong(
 				"sync_time", 0);
