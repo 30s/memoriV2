@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.xtremeprog.memoriv2.PhotosActivity;
 import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.models.Memori;
@@ -144,8 +146,11 @@ public class MemoriListAdapter extends BaseAdapter {
 		holder.btn_show_all.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
-				Toast.makeText(context, "show all", Toast.LENGTH_SHORT).show();
+			public void onClick(View v) {			
+				Intent intent = new Intent(context, PhotosActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);				
+				intent.putExtra("memori", holder.memori);
+				context.startActivity(intent);				
 			}
 		});
 		return holder;

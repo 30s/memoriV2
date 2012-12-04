@@ -20,5 +20,6 @@
     <string name="btn_save">Save</string>
     <string name="btn_logout">Logout</string>
     <string name="btn_show_all">Show All</string>
+    <string name="title_activity_photos">PhotosActivity</string>
 
 </resources>
