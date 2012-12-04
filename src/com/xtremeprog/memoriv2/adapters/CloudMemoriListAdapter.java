@@ -10,9 +10,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.models.CloudMemori;
 import com.xtremeprog.memoriv2.utils.Preferences;
@@ -27,15 +30,22 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		public TextView txt_start_timestamp;
 		public TextView txt_owners;
 		public Button btn_qrcode;
+		public TextView txt_photos;
+		public ImageView img_cover;
 
 	}
 
 	private ArrayList<CloudMemori> memoris;
 	private Context context;
+	private ImageLoader img_loader;
 
 	public CloudMemoriListAdapter(Context context) {
 		this.memoris = new ArrayList<CloudMemori>();
 		this.context = context;
+		img_loader = ImageLoader.getInstance();
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+				context).memoryCacheExtraOptions(80, 80).build();
+		img_loader.init(config);	
 	}
 
 	public void add_memori(CloudMemori memori) {
@@ -71,19 +81,27 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 
 		CloudMemori memori = (CloudMemori) getItem(position);
 		holder.memori = memori;
+		String cover = memori.get_cover();
+		if ( !cover.equals("") ) {
+			img_loader.displayImage(Preferences.getServer(context) + "/photo/" + cover + "/",
+					holder.img_cover);
+		}
 		holder.txt_start_timestamp.setText("Start Time: "
 				+ memori.get_start_timestamp() + "");
 		holder.txt_owners.setText("Owners: " + memori.get_owners().size());
+		holder.txt_photos.setText("Photos: " + memori.getPhotos().size());
 
 		return convertView;
 	}
 
 	private ViewHolder buildTag(View convertView) {
 		final ViewHolder holder = new ViewHolder();
+		holder.img_cover = (ImageView) convertView.findViewById(R.id.img_cover);		
 		holder.txt_start_timestamp = (TextView) convertView
 				.findViewById(R.id.txt_start_timestamp);
 		holder.txt_owners = (TextView) convertView
 				.findViewById(R.id.txt_owners);
+		holder.txt_photos = (TextView) convertView.findViewById(R.id.txt_photos);
 		holder.btn_qrcode = (Button) convertView.findViewById(R.id.btn_qrcode);
 
 		holder.btn_qrcode.setOnClickListener(new OnClickListener() {

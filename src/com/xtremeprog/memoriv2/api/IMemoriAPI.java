@@ -12,6 +12,6 @@ import com.xtremeprog.memoriv2.net.HttpEntityWithProgress.ProgressListener;
 
 public interface IMemoriAPI {
 	JSONObject photo_upload(File file, Photo photo, File voiceFile,
-			ProgressListener progressListener) throws ClientProtocolException,
-			IOException, JSONException;
+			String memori, ProgressListener progressListener)
+			throws ClientProtocolException, IOException, JSONException;
 }

@@ -1,7 +1,10 @@
 package com.xtremeprog.memoriv2.adapters;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.CloudMemoriActivity;
 import com.xtremeprog.memoriv2.R;
+import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
 import com.xtremeprog.memoriv2.utils.Utils;
@@ -43,6 +47,8 @@ public class MemoriListAdapter extends BaseAdapter {
 	private ArrayList<Memori> lst_memori;
 	private ImageLoader img_loader;
 	private Context context;
+	private Memori cur_memori;
+	private MemoriAPI api_client;
 
 	public MemoriListAdapter(Context context) {
 		this.context = context;
@@ -51,6 +57,7 @@ public class MemoriListAdapter extends BaseAdapter {
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				context).memoryCacheExtraOptions(80, 80).build();
 		img_loader.init(config);
+		api_client = (MemoriAPI) MemoriAPI.getInstance(context);
 	}
 
 	public void load_memoris(Cursor cursor) {
@@ -142,25 +149,50 @@ public class MemoriListAdapter extends BaseAdapter {
 
 		@Override
 		protected JSONObject doInBackground(Memori... params) {
+			cur_memori = params[0];
 			return Utils.create_memori(context, params[0]);
 		}
 
 		@Override
 		protected void onPostExecute(JSONObject ret) {
 			super.onPostExecute(ret);
-			if (ret.has("id")) {				
-				Intent intent = new Intent(context, CloudMemoriActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
-			} else {
-				try {
-					Toast.makeText(context, ret.getString("message"),
-							Toast.LENGTH_SHORT).show();
-				} catch (JSONException e) {
-					Toast.makeText(context, "Create memori failed!",
-							Toast.LENGTH_SHORT).show();
-				}
+			
+			String guid;
+			try {
+				guid = ret.getString("id");
+			} catch (JSONException e1) {
+				Toast.makeText(context, "Create memori failed!",
+						Toast.LENGTH_SHORT).show();				
+				return;
+			}
+			
+			for (int i = 0; i < cur_memori.get_photo_count(); i++) {
+				new UploadPhotoTask().execute(guid, i + "");
 			}
 		}
+	}
+
+	private class UploadPhotoTask extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... params) {
+			String guid = params[0];
+			Photo photo = cur_memori.get_photo(Integer.parseInt(params[1]));
+			try {
+				JSONObject ret = api_client.photo_upload(new File(photo.getPath()), photo, null, guid, null);
+				if ( ret.has("error_message") ) {
+					Toast.makeText(context, ret.getString("error_message"),
+							Toast.LENGTH_SHORT).show();				
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
 	}
 }

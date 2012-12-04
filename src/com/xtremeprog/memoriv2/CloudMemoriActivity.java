@@ -29,39 +29,40 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 	private static final int RESULT_SCAN = 100;
 	private ArrayList<JSONObject> memoris;
 	private CloudMemoriListAdapter memori_adapter;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cloud_memori);
-        
-        memoris = new ArrayList<JSONObject>();
-        
-        TextView txt_username = (TextView) findViewById(R.id.txt_username);
-        txt_username.setText("Cloud Account: " + getBaseContext().getString(R.string.username));
-        
-        Button btn_scan = (Button) findViewById(R.id.btn_scan);
-        btn_scan.setOnClickListener(this);
-        
-        ListView lst_cloud_memori = (ListView) findViewById(R.id.lst_cloud_memori);
-        memori_adapter = new CloudMemoriListAdapter(getApplicationContext());
-        lst_cloud_memori.setAdapter(memori_adapter);
-        
-        new LoadMemoriTask().execute();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_cloud_memori, menu);
-        return true;
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_cloud_memori);
+
+		memoris = new ArrayList<JSONObject>();
+
+		TextView txt_username = (TextView) findViewById(R.id.txt_username);
+		txt_username.setText("Cloud Account: "
+				+ getBaseContext().getString(R.string.username));
+
+		Button btn_scan = (Button) findViewById(R.id.btn_scan);
+		btn_scan.setOnClickListener(this);
+
+		ListView lst_cloud_memori = (ListView) findViewById(R.id.lst_cloud_memori);
+		memori_adapter = new CloudMemoriListAdapter(getApplicationContext());
+		lst_cloud_memori.setAdapter(memori_adapter);
+
+		new LoadMemoriTask().execute();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_cloud_memori, menu);
+		return true;
+	}
 
 	@Override
 	public void onClick(View v) {
-		if ( v.getId() == R.id.btn_scan) {
+		if (v.getId() == R.id.btn_scan) {
 			Intent intent = new Intent(Intents.Scan.ACTION);
-			startActivityForResult(intent, RESULT_SCAN);	
-		}		
+			startActivityForResult(intent, RESULT_SCAN);
+		}
 	}
 
 	@Override
@@ -71,8 +72,8 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 			String text = data.getExtras().getString(Intents.Scan.RESULT);
 			Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
 		}
-	}  
-	
+	}
+
 	private class LoadMemoriTask extends AsyncTask<Void, Void, JSONObject> {
 
 		@Override
@@ -87,32 +88,38 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 			try {
 				String message = result.getString("message");
 				if (message.equals("401")) {
-					String username = context.getString(R.string.username); 
+					String username = context.getString(R.string.username);
 					String password = context.getString(R.string.password);
 					// login
 				}
-			} catch (JSONException e) {		
+			} catch (JSONException e) {
 				for (int i = 0; i < memoris.size(); i++) {
 					JSONObject j_memori = memoris.get(i);
 					String guid;
 					String invite_code;
 					long start_timestamp;
 					ArrayList<String> owners = new ArrayList<String>();
+					ArrayList<String> photos = new ArrayList<String>();
 					try {
 						guid = j_memori.getString("id");
 						invite_code = j_memori.getString("invite_code");
 						start_timestamp = j_memori.getLong("start_timestamp");
 						JSONArray j_owners = j_memori.getJSONArray("owners");
-						for (int j = 0; j < j_owners.length(); j++ ) {
+						JSONArray j_photos = j_memori.getJSONArray("photos");
+						for (int j = 0; j < j_owners.length(); j++) {
 							owners.add(j_owners.getString(j));
 						}
-						memori_adapter.add_memori(new CloudMemori(guid, invite_code, start_timestamp, owners));
+						for (int j = 0; j < j_photos.length(); j++) {
+							photos.add(j_photos.getString(j));
+						}
+						memori_adapter.add_memori(new CloudMemori(guid,
+								invite_code, start_timestamp, owners, photos));
 					} catch (JSONException e1) {
 						e1.printStackTrace();
 					}
 				}
 				memori_adapter.notifyDataSetChanged();
-			}			
+			}
 		}
-	}	
+	}
 }
