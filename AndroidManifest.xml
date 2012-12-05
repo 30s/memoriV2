@@ -36,6 +36,10 @@
             android:name=".PhotosActivity"
             android:label="@string/title_activity_photos" >
         </activity>
+        <activity
+            android:name=".CloudPhotoActivity"
+            android:label="@string/title_activity_cloud_photo" >
+        </activity>
     </application>
 
 </manifest>

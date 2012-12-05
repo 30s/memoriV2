@@ -2,7 +2,10 @@ package com.xtremeprog.memoriv2.models;
 
 import java.util.ArrayList;
 
-public class CloudMemori {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class CloudMemori implements Parcelable {
 
 	private String guid;
 	private String invite_code;
@@ -18,6 +21,25 @@ public class CloudMemori {
 		this.owners = owners;
 		this.photos = photos;
 	}
+	
+	public static final Parcelable.Creator<CloudMemori> CREATOR = new Parcelable.Creator<CloudMemori>() {
+
+		@Override
+		public CloudMemori createFromParcel(Parcel source) {
+			return new CloudMemori(source.readString(), 
+					source.readString(), 
+					source.readLong(), 
+					source.readArrayList(String.class.getClassLoader()), 
+					source.readArrayList(String.class.getClassLoader()));
+		}
+
+		@Override
+		public CloudMemori[] newArray(int size) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	};
 	
 	public String get_cover() {
 		if ( photos.size() > 0 ) {
@@ -64,5 +86,20 @@ public class CloudMemori {
 
 	public void setPhotos(ArrayList<String> photos) {
 		this.photos = photos;
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(guid);
+		dest.writeString(invite_code);
+		dest.writeLong(start_timestamp);
+		dest.writeArray(owners.toArray());
+		dest.writeArray(photos.toArray());
 	}
 }

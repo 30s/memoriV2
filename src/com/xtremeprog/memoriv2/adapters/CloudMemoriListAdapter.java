@@ -17,6 +17,7 @@ import com.google.zxing.BarcodeFormat;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.xtremeprog.memoriv2.CloudPhotoActivity;
 import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.models.CloudMemori;
 import com.xtremeprog.memoriv2.utils.Preferences;
@@ -33,6 +34,7 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		public Button btn_qrcode;
 		public TextView txt_photos;
 		public ImageView img_cover;
+		public Button btn_show_all;
 
 	}
 
@@ -125,6 +127,18 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 				context.startActivity(intent);
 			}
 
+		});
+		
+		holder.btn_show_all = (Button) convertView.findViewById(R.id.btn_show_all);
+		holder.btn_show_all.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(context, CloudPhotoActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);				
+				intent.putExtra("memori", holder.memori);
+				context.startActivity(intent);				
+			}
 		});
 
 		return holder;

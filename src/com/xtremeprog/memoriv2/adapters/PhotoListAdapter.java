@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -25,11 +24,8 @@ public class PhotoListAdapter extends BaseAdapter {
 
 	private Memori memori;
 	private ImageLoader img_loader;
-	private Context context;
-	private ViewHolder holder;
 	
 	public PhotoListAdapter(Context context, Memori memori) {
-		this.context = context;
 		this.memori = memori;
 		img_loader = ImageLoader.getInstance();
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
