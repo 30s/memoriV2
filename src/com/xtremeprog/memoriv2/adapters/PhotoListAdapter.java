@@ -8,10 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
+import com.xtremeprog.memoriv2.utils.Utils;
 
 public class PhotoListAdapter extends BaseAdapter {
 
@@ -27,10 +27,7 @@ public class PhotoListAdapter extends BaseAdapter {
 	
 	public PhotoListAdapter(Context context, Memori memori) {
 		this.memori = memori;
-		img_loader = ImageLoader.getInstance();
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				context).memoryCacheExtraOptions(80, 80).build();
-		img_loader.init(config);		
+		img_loader = Utils.getImageLoader(context);
 	}
 	
 	@Override

@@ -24,12 +24,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.PhotosActivity;
 import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.api.MemoriAPI;
 import com.xtremeprog.memoriv2.models.Memori;
 import com.xtremeprog.memoriv2.models.Photo;
+import com.xtremeprog.memoriv2.utils.Utils;
 
 public class MemoriListAdapter extends BaseAdapter {
 
@@ -53,10 +53,7 @@ public class MemoriListAdapter extends BaseAdapter {
 	public MemoriListAdapter(Context context) {
 		this.context = context;
 		lst_memori = new ArrayList<Memori>();
-		img_loader = ImageLoader.getInstance();
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				context).memoryCacheExtraOptions(80, 80).build();
-		img_loader.init(config);
+		img_loader = Utils.getImageLoader(context);
 		api_client = (MemoriAPI) MemoriAPI.getInstance(context);
 	}
 

@@ -14,13 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
-import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.xtremeprog.memoriv2.CloudPhotoActivity;
 import com.xtremeprog.memoriv2.R;
 import com.xtremeprog.memoriv2.models.CloudMemori;
 import com.xtremeprog.memoriv2.utils.Preferences;
+import com.xtremeprog.memoriv2.utils.Utils;
 import com.xtremeprog.memoriv2.zxing.Contents;
 import com.xtremeprog.memoriv2.zxing.Intents;
 
@@ -41,16 +41,13 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 	private ArrayList<CloudMemori> memoris;
 	private Context context;
 	private ImageLoader img_loader;
+	private DisplayImageOptions options;
 
 	public CloudMemoriListAdapter(Context context) {
 		this.memoris = new ArrayList<CloudMemori>();
 		this.context = context;
-		img_loader = ImageLoader.getInstance();
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				context).memoryCacheExtraOptions(80, 80)
-				.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
-				.build();
-		img_loader.init(config);
+		options = Utils.getCloudOptions();
+		img_loader = Utils.getImageLoader(context);
 	}
 
 	public void add_memori(CloudMemori memori) {
@@ -89,7 +86,7 @@ public class CloudMemoriListAdapter extends BaseAdapter {
 		String cover = memori.get_cover();
 		if (!cover.equals("")) {
 			img_loader.displayImage(Preferences.getServer(context) + "/photo/"
-					+ cover + "/?size=285", holder.img_cover);
+					+ cover + "/?size=285", holder.img_cover, options);
 		} else {
 			holder.img_cover.setImageResource(R.drawable.empty_photo);
 		}
