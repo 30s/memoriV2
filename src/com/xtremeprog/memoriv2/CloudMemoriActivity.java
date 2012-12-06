@@ -14,9 +14,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +24,7 @@ import com.xtremeprog.memoriv2.models.CloudMemori;
 import com.xtremeprog.memoriv2.utils.Preferences;
 import com.xtremeprog.memoriv2.zxing.Intents;
 
-public class CloudMemoriActivity extends Activity implements OnClickListener {
+public class CloudMemoriActivity extends Activity {
 
 	private static final int RESULT_SCAN = 100;
 	private CloudMemoriListAdapter memori_adapter;
@@ -43,12 +40,6 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 		TextView txt_username = (TextView) findViewById(R.id.txt_username);
 		txt_username.setText("Cloud Account: "
 				+ Preferences.getRememberedUsername(getApplicationContext()));
-
-		Button btn_scan = (Button) findViewById(R.id.btn_scan);
-		btn_scan.setOnClickListener(this);
-		
-		Button btn_logout = (Button) findViewById(R.id.btn_logout);
-		btn_logout.setOnClickListener(this);
 
 		ListView lst_cloud_memori = (ListView) findViewById(R.id.lst_cloud_memori);
 		memori_adapter = new CloudMemoriListAdapter(getApplicationContext());
@@ -66,24 +57,14 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch( item.getItemId() ) {
+		case R.id.menu_scan:
+			Intent intent = new Intent(Intents.Scan.ACTION);
+			startActivityForResult(intent, RESULT_SCAN);			
+			break;		
 		case R.id.menu_settings:
 			Toast.makeText(getApplicationContext(), "menu settings", Toast.LENGTH_SHORT).show();
 			break;
-		default:
-			break;
-		}
-		return super.onMenuItemSelected(featureId, item);
-	}
-
-	@Override
-	public void onClick(View v) {
-		Intent intent;
-		switch (v.getId()) {
-		case R.id.btn_scan:
-			intent = new Intent(Intents.Scan.ACTION);
-			startActivityForResult(intent, RESULT_SCAN);
-			break;
-		case R.id.btn_logout:
+		case R.id.menu_logout:
 			Preferences.expireToken(getApplicationContext());
 			intent = new Intent(getBaseContext(), MemoriActivity.class);
 			startActivity(intent);
@@ -92,6 +73,7 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 		default:
 			break;
 		}
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 	@Override
