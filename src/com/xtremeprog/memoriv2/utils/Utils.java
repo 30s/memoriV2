@@ -41,7 +41,7 @@ public class Utils {
 					.showStubImage(R.drawable.empty_photo)
 					.showImageForEmptyUri(R.drawable.empty_photo)
 					.resetViewBeforeLoading().cacheInMemory().cacheOnDisc()
-					.delayBeforeLoading(1000).build();
+					.delayBeforeLoading(100).build();
 		}
 		return cloud_options;
 	}
