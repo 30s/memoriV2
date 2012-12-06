@@ -40,6 +40,10 @@
             android:name=".CloudPhotoActivity"
             android:label="@string/title_activity_cloud_photo" >
         </activity>
+        <activity
+            android:name=".LocalFragmentActivity"
+            android:label="@string/title_activity_local_fragment" >
+        </activity>
     </application>
 
 </manifest>

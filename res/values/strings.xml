@@ -22,5 +22,6 @@
     <string name="btn_show_all">Show All</string>
     <string name="title_activity_photos">PhotosActivity</string>
     <string name="title_activity_cloud_photo">CloudPhotoActivity</string>
+    <string name="title_activity_local_fragment">LocalGallery</string>
 
 </resources>

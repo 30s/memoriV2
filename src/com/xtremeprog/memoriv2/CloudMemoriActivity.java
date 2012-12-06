@@ -13,11 +13,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xtremeprog.memoriv2.adapters.CloudMemoriListAdapter;
 import com.xtremeprog.memoriv2.api.MemoriAPI;
@@ -59,6 +61,18 @@ public class CloudMemoriActivity extends Activity implements OnClickListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_cloud_memori, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch( item.getItemId() ) {
+		case R.id.menu_settings:
+			Toast.makeText(getApplicationContext(), "menu settings", Toast.LENGTH_SHORT).show();
+			break;
+		default:
+			break;
+		}
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 	@Override
